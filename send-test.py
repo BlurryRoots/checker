@@ -1,7 +1,7 @@
 import requests
 import json
 
-port = 4242
+port = 8080
 url = 'http://localhost:%d/report' % port
 payload = {
 	'who': 'karl-otto'
