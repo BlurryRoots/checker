@@ -3,9 +3,14 @@ import json
 
 app = Flask (__name__)
 
+app.currentTemplate = "Jow jow"
+
+def update (data):
+	app.currentTemplate = render_template('index.html', nodes=data)
+
 @app.route ("/")
 def keks ():
-	return "Knurpsel purzel!"
+	return app.currentTemplate
 
 @app.route ("/report", methods=['GET', 'POST'])
 def report ():
@@ -14,15 +19,17 @@ def report ():
 	if request.method == 'POST':
 		ct = request.headers['Content-Type']
 		if ct == 'application/json':
-			print json.dumps (request.json)
+			data = json.dumps (request.json)
+			print "data: " + data
+			update (request.json)
 			r = Response ("jowjow", status=200)
 		else:
 			r = Response ("unexpected Content-Type: " + ct)
 	else:
-		r = Response ("hey there!", status=200)
+		r = Response ("danke!", status=200)
 
 	return r
 
 if __name__ == "__main__":
 	print "am i running?"
-	app.run (host='0.0.0.0', port=4242)
+	app.run (host='0.0.0.0', port=4242, debug=True)

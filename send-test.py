@@ -3,9 +3,15 @@ import json
 
 port = 4242
 url = 'http://localhost:%d/report' % port
-payload = {
-	'who': 'karl-otto'
-}
+payload = ({
+	'name': 'karl-otto',
+	'load': 23,
+	'status': True
+}, {
+	'name': 'horst-hubert',
+	'load': 42,
+	'status': True
+})
 ctype = {
 	'content-type': 'application/json'
 }
