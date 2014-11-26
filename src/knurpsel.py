@@ -5,8 +5,12 @@ app = Flask (__name__)
 
 app.currentTemplate = "Jow jow"
 
+class NodeList():
+	def __init__(self):
+		self.nodes = {}
+
 def update (data):
-	app.currentTemplate = render_template('index.html', nodes=data)
+	app.currentTemplate = render_template ('index.html', nodes=data)
 
 @app.route ("/")
 def keks ():
