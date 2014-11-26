@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+
+<title> Checker - Report </title>
+
+<body>
+<h1> Report </h1>
+
+<table>
+	<thead>
+		<tr>
+			<td> Name </td>
+			<td> Load </td>
+			<td> Status </td>
+		</tr>
+	</thead>
+
+	<tbody>
+		{% for node in nodes %}
+		<tr>
+			<td> {{ node.name }} </td>
+			<td> {{ node.load }} </td>
+			<td> {{ node.status }} </td>
+		</tr>
+		{% endfor %}
+	</tbody>
+</body>
+

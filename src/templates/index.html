@@ -1,27 +1,15 @@
 <!DOCTYPE html>
 
-<title> Checker - Node montioring </title>
+<html>
+	<head>
+		<title> Checker - Index </title>
+	</head>
 
-<body>
-<h1> Nodes </h1>
+	<body>
+		<h1> Welcome </h1>
 
-<table>
-	<thead>
-		<tr>
-			<td> Name </td>
-			<td> Load </td>
-			<td> Status </td>
-		</tr>
-	</thead>
-
-	<tbody>
-		{% for node in nodes %}
-		<tr>
-			<td> {{ node.name }} </td>
-			<td> {{ node.load }} </td>
-			<td> {{ node.status }} </td>
-		</tr>
-		{% endfor %}
-	</tbody>
-</body>
-
+		<p>
+			Are you looking for the <a href="{{ link }}">report page</a>?
+		</p>
+	</body>
+</html>
