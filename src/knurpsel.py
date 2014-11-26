@@ -22,9 +22,10 @@ class ReportController ():
 	def __init__ (self):
 		self.nodes = NodeList ()
 		self.view = BaseView ('report.html')
+	def index_get_json (self, request):
+		return jsonify (nodes=self.nodes.get (), status=200)
 	def index_get (self, request):
 		view_str = self.view.render (nodes=self.nodes.get ())
-
 		return Response (view_str, status=200)
 	def index_post (self, request):
 		r = None
@@ -53,7 +54,7 @@ app.controllers['report'] = ReportController ()
 app.controllers['index'] = IndexController ()
 
 @app.route ("/")
-def keks ():
+def respond_index ():
 	c = app.controllers['index']
 	r = None
 
@@ -61,8 +62,17 @@ def keks ():
 
 	return r
 
+@app.route ('/report.json', methods=['GET'])
+def respond_report_json ():
+	c = app.controllers['report']
+	r = None
+
+	r = c.index_get_json (request)
+
+	return r
+
 @app.route ("/report", methods=['GET', 'POST'])
-def report ():
+def respond_report ():
 	c = app.controllers['report']
 	r = None
 
