@@ -1,6 +1,24 @@
 <!DOCTYPE html>
+<html>
+<head>
+  <title> Checker - Report </title>
+  <style type="text/css">
+    .circle {
+            border-radius: 50%;
+            width: 15px;
+            height: 15px;
+            /* width and height can be anything, as long as they're equal */
+    }
 
-<title> Checker - Report </title>
+    .active {
+      background: green;
+    }
+
+    .dead {
+      background: red;
+    }
+  </style>
+</head>
 
 <body>
 <h1> Report </h1>
@@ -19,9 +37,15 @@
 		<tr>
 			<td> {{ node.host }} </td>
 			<td> {{ node.port }} </td>
-			<td> {{ node.active }} </td>
+                        <td>
+                          {% if node.active %}
+                            <div class="circle active"></div>
+                          {% else %}
+                            <div class="circle dead"></div>
+                          {% endif %}
+                        </td>
 		</tr>
 		{% endfor %}
 	</tbody>
 </body>
-
+</html>
