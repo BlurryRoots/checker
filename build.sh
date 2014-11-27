@@ -1,1 +1,1 @@
-sudo docker build -t checker .
+docker build -t checker .
