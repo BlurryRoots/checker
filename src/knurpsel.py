@@ -1,16 +1,64 @@
+#
 from flask import *
-
+from threading import Timer
+#
 import json
 
+#
 app = Flask (__name__)
 
-class NodeList ():
+class ServerNode ():
+	NODE_TIMEOUT = 5
+	def __init__ (self, host, port):
+		self.host = host
+		self.port = port
+		self.activate ()
+		self.timer = None
+	def get_host (self):
+		return self.host
+	def get_port (self):
+		return self.port
+	def activate (self):
+		self.active = True
+	def timeout (self):
+		print '%s:%s timed out!' % (self.host, self.port)
+		self.active = False
+	def is_active (self):
+		return self.active
+	def to_json (self):
+		return '{"host":"%s", "port":%d, "active":%s}' % (
+			self.host,
+			self.port,
+			self.active and 'true' or 'false'
+		)
+
+class NodeDatabase ():
 	def __init__ (self):
-		self.nodes = ()
-	def set (self, nodes):
-		self.nodes = nodes
-	def get (self):
-		return self.nodes
+		self.nodes = {}
+		self.timeout_timers = {}
+	def as_list (self):
+		node_list = []
+		for node_name, node in self.nodes.iteritems ():
+			node_list.append ({
+				'host': node.get_host (),
+				'port': node.get_port (),
+				'active': node.is_active ()
+			})
+		return node_list
+	def update (self, node_info):
+		host = node_info['host']
+		port = node_info['port']
+		key = '%s:%s' % (host, port)
+		if not key in self.nodes:
+			self.nodes[key] = ServerNode (host, port)
+		node = self.nodes[key]
+		node.activate ()
+		if not key in self.timeout_timers:			
+			self.timeout_timers[key] = Timer (ServerNode.NODE_TIMEOUT, self.on_timeout, [key])
+		self.timeout_timers[key].start ()
+	def on_timeout (self, key):
+		self.nodes[key].timeout ()
+		del self.timeout_timers[key]
 
 class BaseView ():
 	def __init__ (self, path):
@@ -20,20 +68,21 @@ class BaseView ():
 
 class ReportController ():
 	def __init__ (self):
-		self.nodes = NodeList ()
+		self.nodes = NodeDatabase ()
 		self.view = BaseView ('report.html')
 	def index_get_json (self, request):
-		return jsonify (nodes=self.nodes.get (), status=200)
+		return Response (json.dumps (self.nodes.as_list ()), status=200)
 	def index_get (self, request):
-		view_str = self.view.render (nodes=self.nodes.get ())
+		view_str = self.view.render (nodes=self.nodes.as_list ())
 		return Response (view_str, status=200)
 	def index_post (self, request):
 		r = None
 		ct = request.headers['Content-Type']
 
 		if ct == 'application/json':
-			self.nodes.set (request.json)
-			r = Response ("jowjow", status=200)
+			json_obj = request.json
+			self.nodes.update (json_obj)
+			r = Response ("thanks for reporting your status!", status=200)
 		else:
 			r = Response ("unexpected Content-Type: " + ct)
 

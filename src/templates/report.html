@@ -9,7 +9,7 @@
 	<thead>
 		<tr>
 			<td> Name </td>
-			<td> Load </td>
+			<td> Port </td>
 			<td> Status </td>
 		</tr>
 	</thead>
@@ -17,9 +17,9 @@
 	<tbody>
 		{% for node in nodes %}
 		<tr>
-			<td> {{ node.name }} </td>
-			<td> {{ node.load }} </td>
-			<td> {{ node.status }} </td>
+			<td> {{ node.host }} </td>
+			<td> {{ node.port }} </td>
+			<td> {{ node.active }} </td>
 		</tr>
 		{% endfor %}
 	</tbody>
