@@ -51,8 +51,9 @@ class NodeDatabase ():
 			self.nodes[key] = ServerNode (host, port)
 		node = self.nodes[key]
 		node.activate ()
-		if not key in self.timeout_timers:			
-			self.timeout_timers[key] = Timer (ServerNode.NODE_TIMEOUT, self.on_timeout, [key])
+		if key in self.timeout_timers:
+			self.timeout_timers[key].cancel ()		
+		self.timeout_timers[key] = Timer (ServerNode.NODE_TIMEOUT, self.on_timeout, [key])
 		self.timeout_timers[key].start ()
 	def on_timeout (self, key):
 		self.nodes[key].timeout ()
