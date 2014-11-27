@@ -4,10 +4,11 @@ from threading import Timer
 #
 import json
 
-#
-app = Flask (__name__)
 
+# create utility classes
 class ServerNode ():
+	"""Represents a server node. Used to document the host,
+	   port and state of the server node."""
 	NODE_TIMEOUT = 5
 	def __init__ (self, host, port):
 		self.host = host
@@ -33,6 +34,9 @@ class ServerNode ():
 		)
 
 class NodeDatabase ():
+	"""Holds all nodes, which had been reporting, since the monitor
+	   service has been started. A node 'times out' after a given number
+	   of seconds, which means it is probably dead."""
 	def __init__ (self):
 		self.nodes = {}
 		self.timeout_timers = {}
@@ -61,12 +65,15 @@ class NodeDatabase ():
 		del self.timeout_timers[key]
 
 class BaseView ():
+	"""Base class for jinja templates. Should be used by controllers
+	   if they want to render stuff."""
 	def __init__ (self, path):
 		self.view_path = path
 	def render (self, *data, **data_map):
 		return render_template (self.view_path, **data_map)
 
 class ReportController ():
+	"""Controller responsible for doing all task related to reporting."""
 	def __init__ (self):
 		self.nodes = NodeDatabase ()
 		self.view = BaseView ('report.html')
@@ -91,13 +98,15 @@ class ReportController ():
 		return Response ('unexpected request!', status=404)
 
 class IndexController ():
+	"""Controller responsible for handling all index actions"""
 	def __init__ (self):
 		self.link_to_report = '/report'
 		self.view = BaseView ('index.html')
 	def index_get (self, request):
 		return self.view.render (link=self.link_to_report)
 
-
+# app configuration
+app = Flask (__name__)
 app.controllers = {}
 app.controllers['report'] = ReportController ()
 app.controllers['index'] = IndexController ()
@@ -105,35 +114,26 @@ app.controllers['index'] = IndexController ()
 @app.route ("/")
 def respond_index ():
 	c = app.controllers['index']
-	r = None
-
 	r = c.index_get (request)
-
 	return r
 
 @app.route ('/report.json', methods=['GET'])
 def respond_report_json ():
 	c = app.controllers['report']
-	r = None
-
 	r = c.index_get_json (request)
-
 	return r
 
 @app.route ("/report", methods=['GET', 'POST'])
 def respond_report ():
 	c = app.controllers['report']
 	r = None
-
 	if request.method == 'POST':
 		r = c.index_post (request)
 	elif request.method == 'GET':
 		r = c.index_get (request)
 	else:
 		r = c.default (request)
-
 	return r
 
 if __name__ == "__main__":
-	print "am i running?"
 	app.run (host='0.0.0.0', port=4242, debug=True)
