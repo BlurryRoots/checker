@@ -4,7 +4,6 @@ from threading import Timer
 #
 import json
 
-
 # create utility classes
 class ServerNode ():
 	"""Represents a server node. Used to document the host,
