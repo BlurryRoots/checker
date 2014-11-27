@@ -26,12 +26,6 @@ class ServerNode ():
 		self.active = False
 	def is_active (self):
 		return self.active
-	def to_json (self):
-		return '{"host":"%s", "port":%d, "active":%s}' % (
-			self.host,
-			self.port,
-			self.active and 'true' or 'false'
-		)
 
 class NodeDatabase ():
 	"""Holds all nodes, which had been reporting, since the monitor
@@ -92,7 +86,6 @@ class ReportController ():
 			r = Response ("thanks for reporting your status!", status=200)
 		else:
 			r = Response ("unexpected Content-Type: " + ct)
-
 		return r
 	def default (self, request):
 		return Response ('unexpected request!', status=404)
