@@ -30,6 +30,7 @@
 			<td> Name </td>
 			<td> Port </td>
 			<td> Status </td>
+			<td> Requests </td>
 		</tr>
 	</thead>
 
@@ -38,13 +39,16 @@
 		<tr>
 			<td> {{ node.host }} </td>
 			<td> {{ node.port }} </td>
-                        <td>
-                          {% if node.active %}
-                            <div class="circle active"></div>
-                          {% else %}
-                            <div class="circle dead"></div>
-                          {% endif %}
-                        </td>
+			<td>
+			  {% if node.active %}
+				<div class="circle active"></div>
+			  {% else %}
+				<div class="circle dead"></div>
+			  {% endif %}
+			</td>
+			<td>
+				{{ node.request_count }}
+			</td>
 		</tr>
 		{% endfor %}
 	</tbody>
